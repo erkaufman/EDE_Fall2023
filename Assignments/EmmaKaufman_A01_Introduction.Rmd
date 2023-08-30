@@ -1,6 +1,6 @@
 ---
 title: "Assignment 1: Introduction"
-author: "Student Name"
+author: "Emma Kaufman"
 output: pdf_document
 geometry: margin=2.54cm
 ---
@@ -40,14 +40,17 @@ Enter answers to the questions just below the >Answer: prompt.
 1. What are your previous experiences with data analytics, R, and Git? Include both formal and informal training.
 
 > Answer: 
+I have no experience with Git. I have previous work experiences with data analytics and R relating to collecting, managing, and analyzing field monitoring data. I mainly worked with hydrologic data from continuous data loggers in gaging stations. Most of my data management strategies were self- taught so I am looking forward to gaining a more formal understanding of how to wrangle and store long-term monitoring data sets. I have used R for some basic data analysis of long-term monitoring data, specifically I used it to model the changes in water storage after a stream restoration project (graphing the differences in stage pre- and post- restoration). I also took a brief "intro to r" training while working for the Inventory and Monitoring divison of the National Parks Service, but haven't had many opportunities to practice those skills since. 
 
 2. Are there any components of the course about which you feel confident?
 
 > Answer: 
+I feel confident about my work ethic and excitement to take as much away from this class as possible! After working with large data sets in a professinal setting I recognize the importance of having good data management strategies. I want to be able to implement strong data management techniques from the onset of projects, as well as improve data management for projects I may join onto in future work. My undergraduate background is in Environmental Engineering and it was a very collaborative learning environment. I am excited that this course encourages us to learn from our peers. I believe I have a lot to learn from my classmates, as well as thoughts to contribute. 
 
 3. Are there any components of the course about which you feel apprehensive?
 
 > Answer: 
+I am slightly apprehensive about my coding skills and familiarity with GitHub. But these are the skills I am hoping to learn from the class, so I feel ok about this and look forward to learning more. 
 
 
 ## 3) GitHub
