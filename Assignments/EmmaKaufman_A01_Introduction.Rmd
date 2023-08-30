@@ -58,7 +58,7 @@ I am slightly apprehensive about my coding skills and familiarity with GitHub. B
 Provide a link below to your forked course repository in GitHub. Make sure you have pulled all recent changes from the course repository and that you have updated your course README file, committed those changes, and pushed them to your GitHub account. 
 
 > Answer: 
-https://github.com/erkaufman/EDE_Fall2023/tree/main
+
 
 ## 4) Knitting
 When you have completed this document, click the `knit` button.This should produce a PDF copy of your markdown document. Submit this PDF to Sakai. 
