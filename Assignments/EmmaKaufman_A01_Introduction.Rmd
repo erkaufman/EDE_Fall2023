@@ -57,8 +57,8 @@ I am slightly apprehensive about my coding skills and familiarity with GitHub. B
 
 Provide a link below to your forked course repository in GitHub. Make sure you have pulled all recent changes from the course repository and that you have updated your course README file, committed those changes, and pushed them to your GitHub account. 
 
-> Answer: 
-? Do I pull/push everytime I open my container/github? saving? do I have to rerun my script if I close it? 
+> Answer:
+https://github.com/erkaufman/EDE_Fall2023
 
 
 ## 4) Knitting
