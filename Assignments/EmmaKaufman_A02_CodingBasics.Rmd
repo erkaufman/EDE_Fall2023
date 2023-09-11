@@ -32,10 +32,22 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 
 ```{r basics 1}
 #1. 
+Sequence = seq(1, 30, 3) # from, to, by
 
 #2. 
+Mean = mean(Sequence)
 
+Median = median(Sequence)
 #3. 
+#correct if else function?
+if (Mean > Median){
+  print("The mean is greater than the median") 
+}
+else{
+   print ("The mean is not greater than the median")
+}
+ 
+
 
 ```
 
