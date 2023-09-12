@@ -32,7 +32,7 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 
 ```{r basics 1}
 #1. 
-Sequence = seq(1, 30, 3) # from 1, to 30, by 3 to create the sequence of numbers called Sequence 
+Sequence = seq(1, 30, 3) #from 1, to 30, by 3 to create the sequence of numbers called Sequence 
 Sequence
 
 #2. 
@@ -58,15 +58,15 @@ Mean>Median #is mean greater than median? will return false if false, return tru
 
 ```{r basics 2}
 #5. 
-Names <- c('Emma', 'Jenn', 'Hanna', 'Cara') #character vector
+Names <- c('Emma', 'Jenn', 'Tim', 'Cara') #character vector
 Names
 #class(Names)
 
-Scores <- c(100, 100, 100 ,100) #numeric vector
+Scores <- c(80, 40, 50 ,90) #numeric vector
 Scores
 #class(Scores)
 
-Passing <- c('TRUE', 'TRUE', 'TRUE', 'TRUE') #character vector
+Passing <- c('TRUE', 'FALSE', 'TRUE', 'TRUE') #character vector
 Passing
 #class(Passing)
 
@@ -94,7 +94,6 @@ They are different because a matrix can only contain one class type, but this da
 is_it_passing <- function(x){
   ifelse(x>=50,TRUE,FALSE)
 }
-  
 ```
 
 11. Apply your function to the vector with test scores that you created in number 5.
