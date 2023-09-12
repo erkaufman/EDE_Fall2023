@@ -71,13 +71,16 @@ Passing
 #class(Passing)
 
 #7.
-df_test_results <- as.data.frame(cbind(Names,Scores,Passing)) #creating a dataframe from the Names, Scores, and Passing vectors 
+#creating a dataframe from the Names, Scores, and Passing vectors 
+df_test_results <- as.data.frame(cbind(Names,Scores,Passing)) 
 df_test_results
 
 #8.
-#Titles of the vectors used to create the df were informative, as a result the column names are informative, but can change them using colnames()
+#Titles of the vectors used to create the df were informative, as a result the column 
+#names are informative, but can change them using colnames()
 
-colnames(df_test_results) <- c('Student Names', 'Test Scores out of 100', 'Above 50%?') #changing the names of the column titles
+#changing the names of the column titles
+colnames(df_test_results) <- c('Student Names', 'Test Scores out of 100', 'Above 50%?') 
 
 df_test_results
 
