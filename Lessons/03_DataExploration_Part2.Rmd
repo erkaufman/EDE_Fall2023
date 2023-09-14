@@ -46,6 +46,8 @@ Note: each of these approaches utilize the package "ggplot2". We will be coverin
 Visualize count data for categorical variables. 
 
 ```{r, fig.height = 3, fig.width = 4}
+
+summary(USGS.flow.data)
 ggplot(USGS.flow.data, aes(x = discharge.mean.approval)) +
   geom_bar()
 
@@ -64,11 +66,11 @@ ggplot(USGS.flow.data) +
 
 #
 ggplot(USGS.flow.data) +
-  geom_histogram(aes(x = discharge.mean), binwidth = 10)
+  geom_histogram(aes(x = discharge.mean))
 
 #
 ggplot(USGS.flow.data) +
-  geom_histogram(aes(x = discharge.mean), bins = 20)
+  geom_histogram(aes(x = discharge.mean), bins = 30)
 
 #
 ggplot(USGS.flow.data, aes(x = discharge.mean)) +
