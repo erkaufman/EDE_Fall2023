@@ -148,16 +148,16 @@ Question: under what circumstances would it be beneficial to use each of these g
 ## Ending discussion
 
 What did you learn about the USGS discharge dataset today? What separate insights did the different graph types offer?
-> Answer: 
+> Answer: freqeuncy of flood events, gauge height and discharge relationships, differences in approved v provisional datasets
 
 
 How can multiple options for data exploration inform our understanding of our data?
 
-> Answer: 
+> Answer: understand different trends, can look at one time or across a range of dates to see if things have changed with time (can relate that to land management)
 
 
 Do you see any patterns in the USGS data for the Eno River? What might be responsible for those patterns and/or relationships?
 
-> Answer: 
+> Answer: higher dischrage w higher gage height, wider range of approved data
 
 
