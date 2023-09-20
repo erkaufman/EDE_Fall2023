@@ -101,10 +101,9 @@ View(Neonics$Conc.1..Author.) #viewing the column to understand the class
 9.  Using `geom_freqpoly`, generate a plot of the number of studies conducted by publication year.
 
 ```{r plotting}
-
+#plot of number of studies by publication year
 ggplot(Neonics) +
   geom_freqpoly(aes(x = Publication.Year), bins = 50) +
- # geom_freqpoly(aes(x = Publication.Year), bins = 50, color = "darkgray") +
   geom_freqpoly(aes(x = Publication.Year), bins = 50,  lty = 2)
 
 
@@ -113,6 +112,7 @@ ggplot(Neonics) +
 10. Reproduce the same graph but now add a color aesthetic so that different Test.Location are displayed as different colors.
 
 ```{r colorful plotting}
+#adding color aesthetic for different test locations
 ggplot(Neonics) +
   geom_freqpoly(aes(x = Publication.Year, color = Test.Location), bins = 50, lty = 1) 
 
@@ -120,7 +120,7 @@ ggplot(Neonics) +
 
 Interpret this graph. What are the most common test locations, and do they differ over time?
 
-> Answer:
+> Answer: The lab and natural field locations tend to be the most common at different points in time. 
 
 11. Create a bar graph of Endpoint counts. What are the two most common end points, and how are they defined? Consult the ECOTOX_CodeAppendix for more information. 
 
