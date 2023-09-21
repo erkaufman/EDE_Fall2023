@@ -42,6 +42,7 @@ getwd()
 #reading in ECOTOX neonicotinoid dataset
 Neonics <- read.csv("./Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv",stringsAsFactors = TRUE) 
 Litter <- read.csv("./Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv", stringsAsFactors = TRUE) 
+
 #reading in Niwot Ridge NEON dataset for litter and woody debris
 
 ```
@@ -94,10 +95,13 @@ summary(Neonics$Species.Common.Name) #summary function
 
 ```{r classes}
 class(Neonics$Conc.1..Author.) #what class is it
+head(Neonics$Conc.1..Author.) #looking at the data contained in the class
+summary(Neonics$Conc.1..Author.) #looking at more of the data contained in the class
+
 #View(Neonics$Conc.1..Author.) #viewing the column to understand the class
 ```
 
-> Answer: It is a factor class. It is not numeric because it contains categorical data of a threshold concentration. We also read strings in as factors. 
+> Answer: It is a factor class. It is not numeric because it contains data that not numbers (some entries are NR, some contain '/' and '<' symbols). As a result because we read in strings as factors when we read in the .csv file, the whole column was classified as a factor.
 
 ## Explore your data graphically (Neonics)
 
