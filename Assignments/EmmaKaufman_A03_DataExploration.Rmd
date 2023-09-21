@@ -39,9 +39,10 @@ library(lubridate)
 getwd() 
 
 #reading in the datasets 
-
-Neonics <- read.csv("./Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv",stringsAsFactors = TRUE)  # reading in ECOTOX neonicotinoid dataset
-Litter <- read.csv("./Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv", stringsAsFactors = TRUE) # reading in Niwot Ridge NEON dataset for litter and woody debris
+#reading in ECOTOX neonicotinoid dataset
+Neonics <- read.csv("./Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv",stringsAsFactors = TRUE) 
+Litter <- read.csv("./Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv", stringsAsFactors = TRUE) 
+#reading in Niwot Ridge NEON dataset for litter and woody debris
 
 ```
 
@@ -93,7 +94,7 @@ summary(Neonics$Species.Common.Name) #summary function
 
 ```{r classes}
 class(Neonics$Conc.1..Author.) #what class is it
-View(Neonics$Conc.1..Author.) #viewing the column to understand the class
+#View(Neonics$Conc.1..Author.) #viewing the column to understand the class
 ```
 
 > Answer: It is a factor class. It is not numeric because it contains categorical data of a threshold concentration. We also read strings in as factors. 
@@ -142,7 +143,8 @@ ggplot(Neonics) +
 ```{r collectDate class}
 class(Litter$collectDate) #class of column
 
-Litter$collectDate <- as.Date(Litter$collectDate, format = "%Y-%m-%d") #convert the data within this column to class of dates
+Litter$collectDate <- as.Date(Litter$collectDate, format = "%Y-%m-%d") 
+#convert the data within this column to class of dates
 
 class(Litter$collectDate) #checking the class of the new variable
 
