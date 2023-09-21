@@ -38,6 +38,8 @@ library(lubridate)
 
 getwd() 
 
+#reading in the datasets 
+
 Neonics <- read.csv("./Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv",stringsAsFactors = TRUE)  # reading in ECOTOX neonicotinoid dataset
 Litter <- read.csv("./Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv", stringsAsFactors = TRUE) # reading in Niwot Ridge NEON dataset for litter and woody debris
 
@@ -59,7 +61,7 @@ Understanding the ecotoxicology of these insecticides can help us to understand 
 > Answer: 
  1. Litter material ("defined as material that is dropped from the forest canopy and has a butt end diameter <2cm and a length <50 cm") was collected in elevated 0.5 m^2 pvc traps.
  2. Sampling occured at terrestrial NEON sites that contained woody vegetation >2m tall
- 3. "In sites with > 50% aerial cover of woody vegetation >2m in height, placement of litter traps was random and utilized the randomized list of grid cell locations also used for herbaceous clip harvest and belowground biomass sampling".
+ 3. Sites were randomly placed ("In sites with > 50% aerial cover of woody vegetation >2m in height, placement of litter traps was random and utilized the randomized list of grid cell locations also used for herbaceous clip harvest and belowground biomass sampling").
  
 ## Obtain basic summaries of your data (Neonics)
 
@@ -85,7 +87,7 @@ summary(Neonics$Effect) #summary function
 summary(Neonics$Species.Common.Name) #summary function
 ```
 
-> Answer: Honey Bee, Parastic Wasp, Buff Tailed Bumblebee, Carniolan Honey Bee, Bumble Bee, and Italian Honeybee are the six most commonly studied species in the dataset. These species are all pollinators. They are of interest because of their ecological importance in the reproductive cycle of plants.
+> Answer: Honey Bee, Parastic Wasp, Buff Tailed Bumblebee, Carniolan Honey Bee, Bumble Bee, and Italian Honeybee are the six most commonly studied species in the dataset. These species are all pollinators. They are of interest because of their ecological importance in the reproduction cycle of plants.
 
 8.  Concentrations are always a numeric value. What is the class of `Conc.1..Author.` column in the dataset, and why is it not numeric?
 
@@ -94,7 +96,7 @@ class(Neonics$Conc.1..Author.) #what class is it
 View(Neonics$Conc.1..Author.) #viewing the column to understand the class
 ```
 
-> Answer: It is a factor class. It is not numeric because it contains categorical data of a threshold concentration
+> Answer: It is a factor class. It is not numeric because it contains categorical data of a threshold concentration. We also read strings in as factors. 
 
 ## Explore your data graphically (Neonics)
 
@@ -103,8 +105,7 @@ View(Neonics$Conc.1..Author.) #viewing the column to understand the class
 ```{r plotting}
 #plot of number of studies by publication year
 ggplot(Neonics) +
-  geom_freqpoly(aes(x = Publication.Year), bins = 50) +
-  geom_freqpoly(aes(x = Publication.Year), bins = 50,  lty = 2)
+  geom_freqpoly(aes(x = Publication.Year), bins = 50,  lty = 1)
 
 
 ```
@@ -120,7 +121,7 @@ ggplot(Neonics) +
 
 Interpret this graph. What are the most common test locations, and do they differ over time?
 
-> Answer: The lab and natural field locations tend to be the most common at different points in time. 
+> Answer: The lab and natural field locations tend to be the most common at different points in time. Most recetntly the lab has been the most common test location (since around 2010).
 
 11. Create a bar graph of Endpoint counts. What are the two most common end points, and how are they defined? Consult the ECOTOX_CodeAppendix for more information. 
 
@@ -132,7 +133,7 @@ ggplot(Neonics) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 ```
 
-> Answer: NOEL (terrestrial, No-observable-effect-level) and LOEL (terrestrial, Lowest-observable-effect-level)
+> Answer: NOEL (terrestrial, No-observable-effect-level) and LOEL (terrestrial, Lowest-observable-effect-level) are the most common end points.
 
 ## Explore your data (Litter)
 
@@ -141,7 +142,7 @@ ggplot(Neonics) +
 ```{r collectDate class}
 class(Litter$collectDate) #class of column
 
-Litter$collectDate <- as.Date(Litter$collectDate, fomrat = "%Y-%m-%d") #convert the data within this column to class of dates
+Litter$collectDate <- as.Date(Litter$collectDate, format = "%Y-%m-%d") #convert the data within this column to class of dates
 
 class(Litter$collectDate) #checking the class of the new variable
 
@@ -171,11 +172,11 @@ ggplot(Litter) +
 15. Using `geom_boxplot` and `geom_violin`, create a boxplot and a violin plot of dryMass by functionalGroup.
 
 ```{r box and violin plot}
-
+#box plot
 ggplot(Litter) +
   geom_boxplot(aes(x = functionalGroup, y = dryMass, group = cut_width(functionalGroup, 1)))
 
-#
+#violin plot
 ggplot(Litter) +
   geom_violin(aes(x = functionalGroup, y = dryMass), draw_quantiles = c(0.25, 0.5, 0.75))
 
@@ -183,7 +184,7 @@ ggplot(Litter) +
 
 Why is the boxplot a more effective visualization option than the violin plot in this case?
 
-> Answer: The violin plot displays density distributions but for the data we are working in there isn't a huge range of values for each functional group. As a result the violin plot isn't very informative and difficult to interpret. The boxplot is more interpretable; it shows us discernable values for dryMass for the different functional groups, most notably for the groups that had larger masses (mixed and needles). 
+> Answer: The violin plot displays density distributions, but for the data we are working in there isn't a huge range of values for each functional group. As a result the violin plot isn't very informative and difficult to interpret. The boxplot is more interpretable; it shows us discernable values for dryMass for the different functional groups, most notably for the groups that had larger masses (mixed and needles). 
 
 What type(s) of litter tend to have the highest biomass at these sites?
 
