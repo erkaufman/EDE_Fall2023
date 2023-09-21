@@ -152,7 +152,9 @@ Litter$collectDate <- as.Date(Litter$collectDate, format = "%Y-%m-%d")
 
 class(Litter$collectDate) #checking the class of the new variable
 
-unique(Litter$collectDat) #getting the unique values within the vector
+unique(Litter$collectDate) #getting the unique values 
+#within the vector to determine which 
+#dates litter was sampled in August 2018
 
 ```
 
