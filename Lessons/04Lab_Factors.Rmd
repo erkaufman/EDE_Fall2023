@@ -8,17 +8,19 @@ editor_options:
 ---
 
 
-```{r setup}
-knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+```{r setup, message = FALSE, warning = FALSE}
+# knitr::opts_chunk$set(message = FALSE, warning = FALSE), alternative to the above
 #Read packages
 library(tidyverse);library(lubridate); library(here)
 
+#here library will return a path where your project lives 
+
 #Read in data, don't convert strings to factors
-sites <- read.csv(here('Data/Raw/NWIS_SiteFlowData_NE_Raw.csv'))
+sites <- read.csv(here('Data/Raw/NWIS_SiteFlowData_NE_RAW.csv')) #or could separate by commas
 dim(sites)
 
 #Convert date column to date object
-sites$date <- ymd_hms(sites$date)
+sites$date <- ymd_hms(sites$date) #refer to lubridate cheat sheet
 
 ```
 
@@ -38,7 +40,7 @@ unique(sites$dow)
 
 #Summary - is it meaningful?
 summary(sites$dow)
-
+#not all numbers are values, sometimes they are names
 ```
 
 ## Convert the days of the week to a factor
@@ -54,7 +56,7 @@ class(sites$dow)
 unique(sites$dow)
 
 #Summary - is it meaningful?
-summary(sites$dow)
+summary(sites$dow) #different now that the column is a factor instead of numeric (each unique value is a grouping variable)
 
 #Show the levels associated with our factor column
 levels(sites$dow)
@@ -83,7 +85,7 @@ levels(sites$dow)
 #Plot again
 ggplot(sites,aes(x=dow)) +
   geom_bar() + 
-  scale_x_discrete(drop=FALSE)
+  scale_x_discrete(drop=FALSE) #dont drop the levels that have no members
 
 ```
 
@@ -101,7 +103,7 @@ ggplot(sites,aes(x=dow)) +
   geom_bar() + 
   scale_x_discrete(drop=FALSE)
 
-#Add **labels** to our factors
+#Add **labels** to our factors, and write tidy code
 sites$dow <- factor(
   sites$dow, 
   levels=c("1","2","3","4","5","6","7"),
@@ -117,3 +119,11 @@ ggplot(sites,aes(x=dow)) +
 ```
 
 ## An exercise for you: see if you can plot the number of samples recorded each month
+
+```{r exercise}
+summary(sites$date)
+
+#create a new month column
+#plot count plot of month column
+
+```
