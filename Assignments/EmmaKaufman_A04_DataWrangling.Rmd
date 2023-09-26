@@ -140,23 +140,35 @@ write.csv(O3_NC2019.select, row.names = FALSE, file ="./Data/Processed/EPAair_O3
 EPAair <- rbind(O3_NC2018.select,O3_NC2019.select,pm25_18.select,pm25_19.select)
 
 #8 
-EPAair.new <- EPA.air %>% 
+EPAair.new3 <- EPAair %>% 
+  #choosing site names that the four data frames have in common
   filter(Site.Name %in% c("Linville Falls", "Durham Armory", "Leggett", "Hattie Avenue", "Clemmons Middle", 
                           "Mendenhall School", "Frying Pan Mountain", "West Johnston Co.", "Garinger High School",
                           "Castle Hayne", "Pitt Agri. Center", "Bryson City", "Millbrook School")) %>% 
-  
-  
-
-  * Some sites have multiple measurements per day. Use the split-apply-combine strategy to generate daily means: group by date, site name, AQS parameter, and county. Take the mean of the AQI value, latitude, and longitude.
-  
-  * Add columns for "Month" and "Year" by parsing your "Date" column (hint: `lubridate` package)
-  
-  * Hint: the dimensions of this dataset should be 14,752 x 9.
+  group_by(Date, Site.Name, AQS_PARAMETER_DESC, COUNTY) %>% 
+  #removing any na's before computing means
+  #filter(!is.na(DAILY_AQI_VALUE) & !is.na(SITE_LATITUDE) & !is.na(SITE_LONGITUDE)) %>% 
+  #generating daily means of aqi, latitude, and longitude
+  summarise( DAILY_AQI_VALUE = mean(DAILY_AQI_VALUE),
+             SITE_LATITUDE = mean(SITE_LATITUDE),
+             SITE_LONGITUDE = mean(SITE_LONGITUDE)) %>% 
+  #adding month and year columns
+  mutate(Month = month(Date),
+         Year = year(Date))
+#Hint: the dimensions of this dataset should be 14,752 x 9, getting incorrect dimensions... why?
+#
 #9
+#separating the ozone and pm2.5 AQI values
+EPAair.spread <- pivot_wider(EPAair.new, names_from = AQS_PARAMETER_DESC, values_from = meanAQI)
 
 #10
+#getting the dimensions of the new tidy dataset
+dim(EPAair.spread)
 
 #11
+#saving tidy dataset as a csv
+write.csv(EPAair.spread, row.names = FALSE, 
+          file ="./Data/Processed/EPAair_O3_PM25_NC1819_Processed.csv") #fix the dimensions from number 8...
 
 ```
 
@@ -170,11 +182,17 @@ EPAair.new <- EPA.air %>%
 ```{r}
 
 #12
-
+summary_data <- EPAair.spread %>% 
+  group_by(Site.Name,Month,Year) %>% 
+  summarise(
+    PM2.5 = mean(PM2.5),
+    Ozone = mean(Ozone)) %>% 
+  drop_na(Ozone)
+  #is it ok that some date columns are NA?
 
 #13
-
-
+#getting dimensions of the final dataset
+dim(summary_data)
 ```
 
 14. Why did we use the function `drop_na` rather than `na.omit`?
