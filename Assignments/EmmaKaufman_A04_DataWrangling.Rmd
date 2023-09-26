@@ -140,7 +140,7 @@ write.csv(O3_NC2019.select, row.names = FALSE, file ="./Data/Processed/EPAair_O3
 EPAair <- rbind(O3_NC2018.select,O3_NC2019.select,pm25_18.select,pm25_19.select)
 
 #8 
-EPAair.new3 <- EPAair %>% 
+EPAair.new <- EPAair %>% 
   #choosing site names that the four data frames have in common
   filter(Site.Name %in% c("Linville Falls", "Durham Armory", "Leggett", "Hattie Avenue", "Clemmons Middle", 
                           "Mendenhall School", "Frying Pan Mountain", "West Johnston Co.", "Garinger High School",
@@ -149,7 +149,7 @@ EPAair.new3 <- EPAair %>%
   #removing any na's before computing means
   #filter(!is.na(DAILY_AQI_VALUE) & !is.na(SITE_LATITUDE) & !is.na(SITE_LONGITUDE)) %>% 
   #generating daily means of aqi, latitude, and longitude
-  summarise( DAILY_AQI_VALUE = mean(DAILY_AQI_VALUE),
+  summarise( meanAQI = mean(DAILY_AQI_VALUE),
              SITE_LATITUDE = mean(SITE_LATITUDE),
              SITE_LONGITUDE = mean(SITE_LONGITUDE)) %>% 
   #adding month and year columns
