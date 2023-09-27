@@ -38,6 +38,7 @@ library(lubridate)
 library(here) 
 
 #1b 
+#checking working directory
 getwd()
 
 #1c 
@@ -92,13 +93,17 @@ pm25_19$Date <- mdy(pm25_19$Date)
 
 #4
 #selecting columns 
-O3_NC2018.select <- select(O3_NC2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+O3_NC2018.select <- select(O3_NC2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, 
+                           COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
 
-O3_NC2019.select <- select(O3_NC2019, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+O3_NC2019.select <- select(O3_NC2019, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, 
+                           COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
 
-pm25_18.select <- select(pm25_18, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+pm25_18.select <- select(pm25_18, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, 
+                         COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
 
-pm25_19.select <- select(pm25_19, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+pm25_19.select <- select(pm25_19, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, 
+                         COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
 
 #5
 #filling in with same value
@@ -107,10 +112,14 @@ pm25_19.select$AQS_PARAMETER_DESC <- "PM2.5"
 
 #6
 #saving processed data
-write.csv(pm25_18.select, row.names = FALSE, file = "./Data/Processed/EPAair_PM25_NC2018_Processed.csv")
-write.csv(pm25_19.select, row.names = FALSE, file = "./Data/Processed/EPAair_PM25_NC2019_Processed.csv")
-write.csv(O3_NC2018.select, row.names = FALSE, file = "./Data/Processed/EPAair_O3_NC2018_Processed.csv")
-write.csv(O3_NC2019.select, row.names = FALSE, file ="./Data/Processed/EPAair_O3_NC2019_Processed.csv")
+write.csv(pm25_18.select, row.names = FALSE, file = 
+            "./Data/Processed/EPAair_PM25_NC2018_Processed.csv")
+write.csv(pm25_19.select, row.names = FALSE, file = 
+            "./Data/Processed/EPAair_PM25_NC2019_Processed.csv")
+write.csv(O3_NC2018.select, row.names = FALSE, file = 
+            "./Data/Processed/EPAair_O3_NC2018_Processed.csv")
+write.csv(O3_NC2019.select, row.names = FALSE, file =
+            "./Data/Processed/EPAair_O3_NC2019_Processed.csv")
 ```
 
 
@@ -142,12 +151,11 @@ EPAair <- rbind(O3_NC2018.select,O3_NC2019.select,pm25_18.select,pm25_19.select)
 #8 
 EPAair.new <- EPAair %>% 
   #choosing site names that the four data frames have in common
-  filter(Site.Name %in% c("Linville Falls", "Durham Armory", "Leggett", "Hattie Avenue", "Clemmons Middle", 
-                          "Mendenhall School", "Frying Pan Mountain", "West Johnston Co.", "Garinger High School",
-                          "Castle Hayne", "Pitt Agri. Center", "Bryson City", "Millbrook School")) %>% 
+  filter(Site.Name %in% c("Linville Falls", "Durham Armory", "Leggett", "Hattie Avenue", 
+                          "Clemmons Middle", "Mendenhall School", "Frying Pan Mountain", 
+                          "West Johnston Co.", "Garinger High School", "Castle Hayne", 
+                          "Pitt Agri. Center", "Bryson City", "Millbrook School")) %>% 
   group_by(Date, Site.Name, AQS_PARAMETER_DESC, COUNTY) %>% 
-  #removing any na's before computing means
-  #filter(!is.na(DAILY_AQI_VALUE) & !is.na(SITE_LATITUDE) & !is.na(SITE_LONGITUDE)) %>% 
   #generating daily means of aqi, latitude, and longitude
   summarise( meanAQI = mean(DAILY_AQI_VALUE),
              SITE_LATITUDE = mean(SITE_LATITUDE),
@@ -155,8 +163,6 @@ EPAair.new <- EPAair %>%
   #adding month and year columns
   mutate(Month = month(Date),
          Year = year(Date))
-#Hint: the dimensions of this dataset should be 14,752 x 9, getting incorrect dimensions... why?
-#
 #9
 #separating the ozone and pm2.5 AQI values
 EPAair.spread <- pivot_wider(EPAair.new, names_from = AQS_PARAMETER_DESC, values_from = meanAQI)
@@ -168,7 +174,7 @@ dim(EPAair.spread)
 #11
 #saving tidy dataset as a csv
 write.csv(EPAair.spread, row.names = FALSE, 
-          file ="./Data/Processed/EPAair_O3_PM25_NC1819_Processed.csv") #fix the dimensions from number 8...
+          file ="./Data/Processed/EPAair_O3_PM25_NC1819_Processed.csv")
 
 ```
 
@@ -188,7 +194,6 @@ summary_data <- EPAair.spread %>%
     PM2.5 = mean(PM2.5),
     Ozone = mean(Ozone)) %>% 
   drop_na(Ozone)
-  #is it ok that some date columns are NA?
 
 #13
 #getting dimensions of the final dataset
@@ -197,4 +202,4 @@ dim(summary_data)
 
 14. Why did we use the function `drop_na` rather than `na.omit`?
 
-> Answer: 
+> Answer: Na.omit drops all rows containing any na values, whereas drop_na just drops the na values from the assigned column (in this case the assigned column was Ozone). We used the function drop_na because we were only interested in removing na values from the Ozone column.  
