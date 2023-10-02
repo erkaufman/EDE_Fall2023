@@ -43,10 +43,14 @@ The expression function can be used when you want to add mathematical symbols an
 Plot_text <-
 ggplot(data=data.frame(x=0,y=0))+
   geom_point(aes(x=x,y=y)) +
+  #add text to plot with geom_text()
+  #specify the position on the x and y axis where you want the text to be displayed 
+  #label argument is an expression in this case, using function paste() to "glue" together all arguments into one expression
+  #could also use paste 
   geom_text(
     x=0,
     y=0.025,
-    label=expression(paste("Mean is ", mu,",", R^{2},'=0.6'))
+    label=expression(paste("Mean is ", mu, ", ", R^{2},'=0.6'))
     )
 
 #Print the plot
@@ -92,17 +96,34 @@ EPAair$Date <- ymd(EPAair$Date)
 Say we want to plot the number of records each month in the Peter/Paul lakes dataset. How might we do that? What challenges do we face? 
 
 ```{r Plot the number of records by month}
-#What kind of values are months?
+#What kind of values are months? integers
+class(PeterPaul.chem.nutrients$month)
 
 #List unique values
+unique(PeterPaul.chem.nutrients$month)
+#see we don't have observations in every month
 
 #Plot how many Lake observations occur each month
+ggplot(PeterPaul.chem.nutrients, aes(x=month))+
+  geom_bar()
 
 #Convert month to a factor -- with 12 levels, labelled with month names
+#use factor function
+#month.abb gives you all 12 months in abbreviated format
+factor(PeterPaul.chem.nutrients$month, levels=1:12, labels = month.abb) #could do this just for the plotting purpose within ggplot
+
 
 #Try again: Plot how many Lake observations occur each month
 
+ggplot(PeterPaul.chem.nutrients, aes(x=factor(PeterPaul.chem.nutrients$month, levels=1:12, labels = month.abb))) +
+  geom_bar()
+
 #Alter to include missing months
+ggplot(PeterPaul.chem.nutrients, 
+       aes(x=factor(PeterPaul.chem.nutrients$month, 
+                    levels=1:12, labels = month.abb))) +
+  geom_bar()+
+  scale_x_discrete(name= "month", drop = FALSE) #drop = FALSE means all factors will be printed
 
 #Tidy up the code
 
@@ -154,6 +175,7 @@ surface_temp_1999_plot +
 #Add a title
 surface_temp_1999_plot + 
   ggtitle("Surface temperature, 1999") +
+  #changing the name of the legend with the labs() function 
   labs(color='Lake') + 
   theme_wsj()
 ```
@@ -210,6 +232,8 @@ my_theme <- theme_base()  +
     
     #complete = TRUE
     )
+
+#can create a theme to make our own plots
 ```
 
 
@@ -225,16 +249,41 @@ Exercise: build your own scatterplots of PeterPaul.chem.nutrients
 ```{r, fig.height = 3, fig.width = 4, warning = FALSE}
 
 # 1. 
-# Plot surface temperatures by day of  year. 
+# Plot surface temperatures by day of  year. (depth = 0 )
 # Color your points by year, and facet by lake in two rows.
 # Change the ylab name
-
+surfacetemp<-
+  ggplot(filter(PeterPaul.chem.nutrients, depth == 0),
+         aes(
+           x = daynum, 
+           y= temperature_C, 
+           color= year4 #why doesnt this have to be a factor (just depends on whether you have continuous or missing data, could do as.factor() if you want)
+           ))+
+  geom_point() +
+  facet_wrap(vars(lakename), nrow = 2) +
+  labs (
+    y = "Surface Temperature"
+  )
+  
+print(surfacetemp)
 
 #2. 
 # Plot temperature by date. Color your points by depth.
 # Change the size of your point to 0.5
 # Change the color palette to magma and play with direction (+- 1), which one makes more sense?
 # Change x axis to include marker/labels every 5 years
+
+surfacetemp2 <-
+  ggplot((PeterPaul.chem.nutrients),
+         aes(
+           x=sampledate,
+           y= temperature_C,
+           color = depth)) +
+  geom_point(size = 0.5) +
+  scale_color_viridis(option = "magma", direction = -1) +
+  scale_x_date(date_breaks = "5 years", date_labels = '%Y')
+
+print(surfacetemp2)
 
 
 
@@ -249,6 +298,20 @@ Exercise: Plot relationships between air quality measurements
 # Plot AQI values for ozone by PM2.5, colored by latitude 
 # Make the points 50 % transparent
 # Add a line of best fit for the linear regression of these variables.
+
+air <- 
+  ggplot((EPAair),
+         aes(
+           x = PM2.5,
+           y = Ozone,
+           color= mean_Lat
+         )) +
+  #transparancy is alpha
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = 'lm')
+
+print(air)
+  
 
 
 

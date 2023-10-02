@@ -81,6 +81,9 @@ Here are some commonly used aesthetic types that can be manipulated in ggplot:
 ggplot(EPAair, aes(x = Date, y = Ozone)) + 
   geom_point()
 
+#color inside aethethics is coloring the plot
+#color outside of aesthetics is just coloring a point or line (also this point must be a *factor*!!! )
+
 O3plot <- ggplot(EPAair) +
   geom_point(aes(x = Date, y = Ozone))
 print(O3plot)
