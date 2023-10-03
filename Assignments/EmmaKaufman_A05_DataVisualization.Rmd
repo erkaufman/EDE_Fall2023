@@ -1,6 +1,6 @@
 ---
 title: "Assignment 5: Data Visualization"
-author: "Student Name"
+author: "Emma Kaufman"
 date: "Fall 2023"
 output: pdf_document
 geometry: margin=2.54cm
@@ -32,8 +32,33 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Vi
 
 ```{r initialize project}
 #1 
+#Install packages
+library(tidyverse)
+library(lubridate)
+library(here) #The here package allows for better control of relative paths
+library(cowplot)
+
+#Ensure that "here" points to your project folder
+here()
+
+#get working directory
+getwd()
+
+#read in files
+LakeChem <- read.csv(
+  file=here("Data/Processed_KEY/NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv"), 
+  stringsAsFactors = TRUE
+)
+
+Litter <- read.csv(
+  file=here("Data/Processed_KEY/NEON_NIWO_Litter_mass_trap_Processed.csv"), 
+  stringsAsFactors = TRUE
+)
 
 #2 
+#changing to date format
+Litter$collectDate <- ymd(Litter$collectDate)
+LakeChem$sampledate <- ymd(LakeChem$sampledate)
 
 ```
 ## Define your theme
@@ -46,6 +71,26 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Vi
 
 ```{r build plot theme}
 #3
+my_theme <- theme_base()  + 
+  theme(
+    line = element_line(
+      color = 'navyblue',
+      linewidth = 2
+      ),
+    plot.title =        element_text(
+      color = 'navyblue',
+      size = 15
+    ),
+    axis.text =         element_text(
+      color = 'navyblue'
+    ),
+    axis.title.x = element_text(
+      color = "navyblue"),
+  axis.title.y = element_text(
+    color = "navyblue"),
+    plot.background = element_rect(
+      fill = 'lightblue'
+    ))
 
 ```
 
@@ -56,6 +101,23 @@ For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best pract
 
 ```{r plot total P vs PO4}
 #4 
+phos_plot<- 
+  ggplot((LakeChem),
+         aes(
+           x = tp_ug,
+           y = po4,
+           shape = lakename
+         )) +
+  geom_point()+
+  geom_smooth(method = 'lm', 
+              color = 'black')+
+  ylim(0,50)+
+  ggtitle("Total Phosphorus by Phosphate for Peter and Paul Lakes")+
+  my_theme
+
+print(phos_plot)
+
+#do i need two trendlines?
 
 ```
 
@@ -68,7 +130,50 @@ Tip:
 
 ```{r Create boxplots}
 #5 
+#a
 
+Temperatureplot <-
+  ggplot((LakeChem), 
+         aes(
+           x = factor(LakeChem$month, levels=1:12, labels = month.abb), 
+           y = temperature_C, 
+           color = lakename)) +
+           #color = factor(LakeChem$lakename))) +
+  geom_boxplot() +
+    my_theme 
+
+  
+print(Temperatureplot)
+
+#b
+TPplot <-
+  ggplot((LakeChem), 
+         aes(
+           x = factor(month, levels=1:12, labels = month.abb), 
+           y = tp_ug, 
+           color = lakename)) +
+           #color = factor(LakeChem$lakename))) +
+  geom_boxplot() +
+    my_theme 
+
+print(TPplot)
+
+#c
+TNplot <-
+  ggplot((LakeChem), 
+         aes(
+           x = factor(month, levels=1:12, labels = month.abb), 
+           y = tn_ug, 
+           color = lakename)) +
+           #color = factor(LakeChem$lakename))) +
+  geom_boxplot() +
+    my_theme 
+
+print(TNplot)
+
+
+#change axis title 
+#check february? oct? nov?
 ```
 
 Question: What do you observe about the variables of interest over seasons and between lakes? 
