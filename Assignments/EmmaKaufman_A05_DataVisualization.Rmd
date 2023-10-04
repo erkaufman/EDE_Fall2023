@@ -130,22 +130,27 @@ Tip:
 
 ```{r Create boxplots}
 #5 
-#a
 
+unique(LakeChem$month) #seeing which months should plot data 
+
+#a) plotting temperature
 Temperatureplot <-
   ggplot((LakeChem), 
          aes(
            x = factor(LakeChem$month, levels=1:12, labels = month.abb), 
            y = temperature_C, 
            color = lakename)) +
-           #color = factor(LakeChem$lakename))) +
   geom_boxplot() +
-    my_theme 
+  ggtitle("Temperature for Peter and Paul Lakes") +
+  scale_x_discrete(name= "month", drop = FALSE) +
+  labs(y = "temperature (C)") +
+    my_theme +
+  theme(legend.position = "bottom")
 
   
 print(Temperatureplot)
 
-#b
+#b) plotting total phosphorus
 TPplot <-
   ggplot((LakeChem), 
          aes(
@@ -154,31 +159,38 @@ TPplot <-
            color = lakename)) +
            #color = factor(LakeChem$lakename))) +
   geom_boxplot() +
-    my_theme 
+  ggtitle("Total Phosphorus for Peter and Paul Lakes") +
+  scale_x_discrete(name= "month", drop = FALSE) +
+  labs(y = "phosphorus (ug)")+
+  my_theme 
 
 print(TPplot)
 
-#c
+#c) plotting total nitrogen
 TNplot <-
   ggplot((LakeChem), 
          aes(
            x = factor(month, levels=1:12, labels = month.abb), 
            y = tn_ug, 
            color = lakename)) +
-           #color = factor(LakeChem$lakename))) +
   geom_boxplot() +
-    my_theme 
+  ggtitle("Total Nitrogen for Peter and Paul Lakes")+
+  scale_x_discrete(name= "month", drop = FALSE) +
+  labs(y = "nitrogen (ug)") +
+  my_theme 
 
 print(TNplot)
 
-
-#change axis title 
-#check february? oct? nov?
+plot_grid(TNplot+theme(legend.position = "none"),
+          TPplot+ theme(legend.position = "none"),
+          Temperatureplot, ncol = 1,
+          rel_heights = c(1,1,1.25),
+          align = "vh")
 ```
 
 Question: What do you observe about the variables of interest over seasons and between lakes? 
 
-> Answer: 
+> Answer: Temperature is similar in peter and paul lakes, phosphorus and nitrogen are higher in peter lake. 
 
 6. [Niwot Ridge] Plot a subset of the litter dataset by displaying only the "Needles" functional group. Plot the dry mass of needle litter by date and separate by NLCD class with a color aesthetic. (no need to adjust the name of each land use)
 
@@ -186,12 +198,41 @@ Question: What do you observe about the variables of interest over seasons and b
 
 ```{r Plot litter}
 #6
+Needles_mass <-
+  Litter %>% 
+  filter(functionalGroup == "Needles")
+  
 
+Needlesplot <- ggplot((Needles_mass),
+                      aes(
+                        #x= factor(collectDate), #what is the form the date should take?
+                        x = collectDate,
+                        y= dryMass,
+                        color = nlcdClass
+                      )) +
+  geom_point()+ #what is the type of plot I should make?
+  ggtitle("Needles dry mass over time")+
+  scale_x_date(date_breaks = "4 months", date_labels = '%m/%y')+
+  my_theme
+print(Needlesplot)
 
 #7
+Needlesplot_faceted <- ggplot((Needles_mass),
+                      aes(
+                        x= collectDate, #what is the form the date should take?
+                        y= dryMass
+                      )) +
+  geom_point()+ #what is the type of plot I should make?
+  facet_wrap(vars(nlcdClass), nrow = 3) +
+  ggtitle("Needles dry mass over time")+
+  scale_x_date(date_breaks = "4 months", date_labels = '%m/%y')+
+  my_theme
 
+print(Needlesplot_faceted)
+
+#what do i need to do to dates?
 
 ```
 Question: Which of these plots (6 vs. 7) do you think is more effective, and why? 
 
-> Answer:
+> Answer:the faceted plot because you can see themes
