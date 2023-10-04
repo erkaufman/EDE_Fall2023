@@ -37,6 +37,8 @@ library(tidyverse)
 library(lubridate)
 library(here) #The here package allows for better control of relative paths
 library(cowplot)
+library(ggplot2)
+library(ggthemes)
 
 #Ensure that "here" points to your project folder
 here()
@@ -71,26 +73,32 @@ LakeChem$sampledate <- ymd(LakeChem$sampledate)
 
 ```{r build plot theme}
 #3
+#building my theme
 my_theme <- theme_base()  + 
   theme(
     line = element_line(
       color = 'navyblue',
-      linewidth = 2
+      linewidth = 0.5
       ),
-    plot.title =        element_text(
+    plot.title = element_text(
       color = 'navyblue',
       size = 15
     ),
-    axis.text =         element_text(
+    axis.text = element_text(
       color = 'navyblue'
     ),
     axis.title.x = element_text(
-      color = "navyblue"),
+      color = "navyblue",
+      #size = 8
+      ),
   axis.title.y = element_text(
-    color = "navyblue"),
+    color = "navyblue"
+    ),
     plot.background = element_rect(
       fill = 'lightblue'
     ))
+
+theme_set(my_theme)
 
 ```
 
@@ -103,21 +111,25 @@ For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best pract
 #4 
 phos_plot<- 
   ggplot((LakeChem),
+         #choosing variables
          aes(
            x = tp_ug,
            y = po4,
-           shape = lakename
+           #shape = lakename,
+           color = lakename
          )) +
   geom_point()+
+  #adding trendline
   geom_smooth(method = 'lm', 
               color = 'black')+
+  #removing outliers
   ylim(0,50)+
+  #adjusting aesthetics of the plot
   ggtitle("Total Phosphorus by Phosphate for Peter and Paul Lakes")+
-  my_theme
+  #my_theme +
+  labs(x= "Phosphorus (ug)", y= "Phosphate")
 
-print(phos_plot)
-
-#do i need two trendlines?
+print(phos_plot) #displaying
 
 ```
 
@@ -130,7 +142,6 @@ Tip:
 
 ```{r Create boxplots}
 #5 
-
 unique(LakeChem$month) #seeing which months should plot data 
 
 #a) plotting temperature
@@ -144,11 +155,10 @@ Temperatureplot <-
   ggtitle("Temperature for Peter and Paul Lakes") +
   scale_x_discrete(name= "month", drop = FALSE) +
   labs(y = "temperature (C)") +
-    my_theme +
+  #my_theme +
   theme(legend.position = "bottom")
 
-  
-print(Temperatureplot)
+#print(Temperatureplot)
 
 #b) plotting total phosphorus
 TPplot <-
@@ -157,14 +167,14 @@ TPplot <-
            x = factor(month, levels=1:12, labels = month.abb), 
            y = tp_ug, 
            color = lakename)) +
-           #color = factor(LakeChem$lakename))) +
   geom_boxplot() +
   ggtitle("Total Phosphorus for Peter and Paul Lakes") +
   scale_x_discrete(name= "month", drop = FALSE) +
   labs(y = "phosphorus (ug)")+
-  my_theme 
+  my_theme +
+  theme(legend.position = "bottom")
 
-print(TPplot)
+#print(TPplot)
 
 #c) plotting total nitrogen
 TNplot <-
@@ -177,20 +187,38 @@ TNplot <-
   ggtitle("Total Nitrogen for Peter and Paul Lakes")+
   scale_x_discrete(name= "month", drop = FALSE) +
   labs(y = "nitrogen (ug)") +
-  my_theme 
+  my_theme +
+  theme(legend.position = "bottom")
 
-print(TNplot)
+#print(TNplot)
 
-plot_grid(TNplot+theme(legend.position = "none"),
-          TPplot+ theme(legend.position = "none"),
-          Temperatureplot, ncol = 1,
-          rel_heights = c(1,1,1.25),
-          align = "vh")
+#plotting using cowplot to display all figures as one image
+plot_grid(TNplot+theme(
+  legend.position = "none",
+  axis.title.x = element_text(size= 8),
+  axis.title.y = element_text(size = 8),
+  plot.title = element_text(size = 10),
+  axis.text = element_text(size = 8)),
+  #no legend for two of the plots
+  TPplot+ theme(legend.position = "none",
+                axis.title.x = element_text(size= 8),
+                axis.title.y = element_text(size = 8),
+                plot.title = element_text(size = 10),
+                axis.text = element_text(size = 8)),
+  Temperatureplot + theme(axis.title.x = element_text(size= 8),
+                axis.title.y = element_text(size = 8),
+                plot.title = element_text(size = 10),
+                legend.text = element_text(size = 10),
+                legend.title = element_text(size = 10),
+                axis.text = element_text(size = 8)),
+  ncol = 1,
+  rel_heights = c(1.25,1.25,1.5),
+  #ensuring alignment
+  align = "vh")
 ```
 
 Question: What do you observe about the variables of interest over seasons and between lakes? 
-
-> Answer: Temperature is similar in peter and paul lakes, phosphorus and nitrogen are higher in peter lake. 
+> Answer: Temperature is similar in peter and paul lakes across the seasons displayed. Phosphorus and nitrogen are both higher in peter lake each month. The average of phosphorus and nitrogen stay relatively consistent for each lake regardless of month. 
 
 6. [Niwot Ridge] Plot a subset of the litter dataset by displaying only the "Needles" functional group. Plot the dry mass of needle litter by date and separate by NLCD class with a color aesthetic. (no need to adjust the name of each land use)
 
@@ -202,7 +230,6 @@ Needles_mass <-
   Litter %>% 
   filter(functionalGroup == "Needles")
   
-
 Needlesplot <- ggplot((Needles_mass),
                       aes(
                         #x= factor(collectDate), #what is the form the date should take?
@@ -213,16 +240,18 @@ Needlesplot <- ggplot((Needles_mass),
   geom_point()+ #what is the type of plot I should make?
   ggtitle("Needles dry mass over time")+
   scale_x_date(date_breaks = "4 months", date_labels = '%m/%y')+
-  my_theme
+  my_theme+
+  theme(legend.position = "bottom",
+        legend.key.size = unit(0.1, "cm"))
 print(Needlesplot)
 
 #7
 Needlesplot_faceted <- ggplot((Needles_mass),
                       aes(
-                        x= collectDate, #what is the form the date should take?
+                        x= collectDate,
                         y= dryMass
                       )) +
-  geom_point()+ #what is the type of plot I should make?
+  geom_point()+
   facet_wrap(vars(nlcdClass), nrow = 3) +
   ggtitle("Needles dry mass over time")+
   scale_x_date(date_breaks = "4 months", date_labels = '%m/%y')+
@@ -230,9 +259,8 @@ Needlesplot_faceted <- ggplot((Needles_mass),
 
 print(Needlesplot_faceted)
 
-#what do i need to do to dates?
 
 ```
 Question: Which of these plots (6 vs. 7) do you think is more effective, and why? 
 
-> Answer:the faceted plot because you can see themes
+> Answer:The faceted plot is more effective. You can see differences in needle mass for different land cover classes must more effectively.  It allows you to see patterns in the data broken down by land cover class. When all of the data are plotted together in different colors it is harder to see any pattern in the data. The faceted graphs allow for more direct comparison. 
