@@ -155,10 +155,10 @@ Temperatureplot <-
   ggtitle("Temperature for Peter and Paul Lakes") +
   scale_x_discrete(name= "month", drop = FALSE) +
   labs(y = "temperature (C)") +
-  #my_theme +
+  my_theme +
   theme(legend.position = "bottom")
 
-#print(Temperatureplot)
+print(Temperatureplot)
 
 #b) plotting total phosphorus
 TPplot <-
@@ -174,7 +174,7 @@ TPplot <-
   my_theme +
   theme(legend.position = "bottom")
 
-#print(TPplot)
+print(TPplot)
 
 #c) plotting total nitrogen
 TNplot <-
@@ -190,23 +190,23 @@ TNplot <-
   my_theme +
   theme(legend.position = "bottom")
 
-#print(TNplot)
+print(TNplot)
 
 #plotting using cowplot to display all figures as one image
 plot_grid(TNplot+theme(
   legend.position = "none",
-  axis.title.x = element_text(size= 8),
-  axis.title.y = element_text(size = 8),
+  axis.title.x = element_text(size= 10),
+  axis.title.y = element_text(size = 10),
   plot.title = element_text(size = 10),
   axis.text = element_text(size = 8)),
   #no legend for two of the plots
   TPplot+ theme(legend.position = "none",
-                axis.title.x = element_text(size= 8),
-                axis.title.y = element_text(size = 8),
+                axis.title.x = element_text(size= 10),
+                axis.title.y = element_text(size = 10),
                 plot.title = element_text(size = 10),
                 axis.text = element_text(size = 8)),
-  Temperatureplot + theme(axis.title.x = element_text(size= 8),
-                axis.title.y = element_text(size = 8),
+  Temperatureplot + theme(axis.title.x = element_text(size= 10),
+                axis.title.y = element_text(size = 9),
                 plot.title = element_text(size = 10),
                 legend.text = element_text(size = 10),
                 legend.title = element_text(size = 10),
@@ -242,7 +242,8 @@ Needlesplot <- ggplot((Needles_mass),
   scale_x_date(date_breaks = "4 months", date_labels = '%m/%y')+
   my_theme+
   theme(legend.position = "bottom",
-        legend.key.size = unit(0.1, "cm"))
+        legend.key.size = unit(0.1, "cm"),
+        legend.background = element_rect(fill = "transparent", color = NA))
 print(Needlesplot)
 
 #7
