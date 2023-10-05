@@ -98,7 +98,7 @@ my_theme <- theme_base()  +
       fill = 'lightblue'
     ))
 
-theme_set(my_theme)
+theme_set(my_theme) #setting as default theme
 
 ```
 
@@ -113,8 +113,8 @@ phos_plot<-
   ggplot((LakeChem),
          #choosing variables
          aes(
-           x = tp_ug,
-           y = po4,
+           y = tp_ug,
+           x = po4,
            #shape = lakename,
            color = lakename
          )) +
@@ -123,13 +123,14 @@ phos_plot<-
   geom_smooth(method = 'lm', 
               color = 'black')+
   #removing outliers
-  ylim(0,50)+
+  ylim(0,150)+
+  xlim(0,50)+
   #adjusting aesthetics of the plot
   ggtitle("Total Phosphorus by Phosphate for Peter and Paul Lakes")+
   #my_theme +
-  labs(x= "Phosphorus (ug)", y= "Phosphate")
+  labs(y= expression(paste("Phosphorus (", mu, "g)")), x= expression(paste("Phosphate (", mu, "g)")))
 
-print(phos_plot) #displaying
+print(phos_plot) #displaying the graph
 
 ```
 
@@ -170,7 +171,7 @@ TPplot <-
   geom_boxplot() +
   ggtitle("Total Phosphorus for Peter and Paul Lakes") +
   scale_x_discrete(name= "month", drop = FALSE) +
-  labs(y = "phosphorus (ug)")+
+  labs(y = expression(paste("phosphorus (", mu, "g)")))+
   my_theme +
   theme(legend.position = "bottom")
 
@@ -186,7 +187,7 @@ TNplot <-
   geom_boxplot() +
   ggtitle("Total Nitrogen for Peter and Paul Lakes")+
   scale_x_discrete(name= "month", drop = FALSE) +
-  labs(y = "nitrogen (ug)") +
+  labs(y = expression(paste("nitrogen(", mu, "g)"))) +
   my_theme +
   theme(legend.position = "bottom")
 
@@ -232,31 +233,41 @@ Needles_mass <-
   
 Needlesplot <- ggplot((Needles_mass),
                       aes(
-                        #x= factor(collectDate), #what is the form the date should take?
-                        x = collectDate,
+                        x= factor(collectDate), #what is the form the date should take?
+                        #x = collectDate,
                         y= dryMass,
                         color = nlcdClass
                       )) +
   geom_point()+ #what is the type of plot I should make?
   ggtitle("Needles dry mass over time")+
-  scale_x_date(date_breaks = "4 months", date_labels = '%m/%y')+
+  #scale_x_date(date_breaks = "4 months", date_labels = '%m/%y')+
   my_theme+
   theme(legend.position = "bottom",
         legend.key.size = unit(0.1, "cm"),
-        legend.background = element_rect(fill = "transparent", color = NA))
+        legend.background = element_rect(fill = "transparent", color = NA),
+        axis.text.x = element_text(angle = 60,
+                                   vjust = 1,
+                                   hjust = 1,
+                                   size = 10)) +
+        labs(x= "Date collected", y = "Dry Mass (g)")
 print(Needlesplot)
 
 #7
 Needlesplot_faceted <- ggplot((Needles_mass),
                       aes(
-                        x= collectDate,
+                        x= factor(collectDate),
                         y= dryMass
                       )) +
   geom_point()+
   facet_wrap(vars(nlcdClass), nrow = 3) +
-  ggtitle("Needles dry mass over time")+
-  scale_x_date(date_breaks = "4 months", date_labels = '%m/%y')+
-  my_theme
+  ggtitle("Needles dry mass over time") +
+ # scale_x_date(date_breaks = "4 months", date_labels = '%m/%y')+
+  labs(x= "Date collected", y = "Dry Mass (g)") +
+  my_theme + 
+  theme(axis.text.x = element_text(angle = 60,
+                                   vjust = 1,
+                                   hjust = 1,
+                                   size = 10))
 
 print(Needlesplot_faceted)
 
