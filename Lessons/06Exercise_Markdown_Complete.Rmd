@@ -13,6 +13,7 @@ toc: true
 ## Set up the coding environment
 
 ```{r setup, warning=FALSE, echo=FALSE, include = FALSE}
+#include= FALSE to remove this code from the final knit pdf 
 
 #Load packages
 library(tidyverse);library(here);library(lubridate)
@@ -27,7 +28,7 @@ nutrient_data_raw$sampledate = ymd(nutrient_data_raw$sampledate)
 
 ```
 
-The raw dataset has `r nrow(nutrient_data_raw)` rows and `r ncol(nutrient_data_raw)` columns.
+The raw dataset has `r nrow(nutrient_data_raw)` rows and `r ncol(nutrient_data_raw)` columns. #doing r code within markdown
 
 ## Wrangle the data
 
