@@ -23,6 +23,7 @@ here()
 ## T-Test
 
 Continuous response, one categorical explanatory variable with two categories (or comparison to a single value if a one-sample test).
+- can be run using a linear model framework
 
 ### Formulating Hypothesis for µ
 
@@ -33,6 +34,7 @@ The null and alternative hypotheses are always stated in terms of the population
 
 ### One-sample t-test
 The object of a one sample test is to test the null hypothesis that the mean of the group is equal to a specific value. 
+
 
 Function t.test()
 **x**	a (non-empty) numeric vector of data values.
@@ -90,7 +92,7 @@ Write a sentence or two about the results of this test. Include both the results
 The two-sample *t* test is used to test the hypothesis that the mean of two samples is equivalent. Unlike the one-sample tests, a two-sample test requires a second assumption that the variance of the two groups is equivalent. 
 
 For example, we might ask ourselves (from the EPA air quality processed dataset): 
-Are Ozone levels different between 2018 and 2019?
+Are Ozone levels different between 2018 and 2019? (do these two samples have the same or different means?)
 
 ```{r}
 #First let's look at the data
@@ -109,7 +111,7 @@ summary(O3.twosample2)
 
 ```
 
-
+- you can also run two sample t test as an lm function
 
 
 

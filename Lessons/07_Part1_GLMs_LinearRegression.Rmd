@@ -14,6 +14,27 @@ editor_options:
 3. Interpret and report the results of linear regressions in publication-style formats
 3. Apply model selection methods to choose model formulations
 
+## Terminology
+- response: variable we are trying to predict (dependent variable)
+- independent variable: used to predict response (predictor)
+- record: vector of predictors and outcome value from an observation
+- intercept: when x is 0, what is y?
+- regression coefficient: slope of the regression line
+- fitted values: estimates of y obtained from the regression line (aka "predicition"), values of y we estimate with our model
+- residuals: what is the difference between actual y and our predicted y 
+- least squares: regression coefficient (minimum residuals)
+
+##General workflow
+- view data: scatterplot of y v. x, do you see a trend? 
+- do you need to do a transformation to see a relationship? (log relationship?)
+- if you see a trend, then create a linear model! 
+    - find best fit line (lm() function in r, based on least squares)
+    - assumes residuals are normal, sensitive to outliers!
+    - assume causation (dependent)
+- examine model summary to see if its a meaningful regression 
+  - r2, p values (less than 0.05)
+    - ex. 42% of iradiance in water is explained by depth, you could add more variables to get a better prediciton 
+
 ## Generalized Linear Models (GLMs)
 
 The analysis of variance (ANOVA), and linear regression are special cases of the **generalized linear model** (GLM). The GLM also includes analyses not covered in this class, including logistic regression, multinomial regression, chi square, and log-linear models. The common characteristic of general linear models is the expression of a continuous response variable as a linear combination of the effects of categorical or continuous explanatory variables, plus an error term that expresses the random error associated with the coefficients of all explanatory variables. The explanatory variables comprise the deterministic component of the model, and the error term comprises the stochastic component of the model. Historically, artificial distinctions were made between linear models that contained categorical and continuous explanatory variables, but this distinction is no longer made. The inclusion of these models within the umbrella of the GLM allows models to fit the main effects of both categorical and continuous explanatory variables as well as their interactions. 
@@ -95,12 +116,17 @@ So, we see there is a significant negative correlation between irradiance and de
 An exploratory option to visualize the model fit is to use the function `plot`. This function will return four graphs, which are intended only for checking the fit of the model and not for communicating results. The plots that are returned are: 
 
 1. **Residuals vs. Fitted.** The value predicted by the line of best fit is the fitted value, and the residual is the distance of that actual value from the predicted value. By definition, there will be a balance of positive and negative residuals. Watch for drastic asymmetry from side to side or a marked departure from zero for the red line - these are signs of a poor model fit.
+- want this plot to be as close to 0 as possible (very clustered around red lines means a good fit)
 
 2. **Normal Q-Q.** The points should fall close to the 1:1 line. We often see departures from 1:1 at the high and low ends of the dataset, which could be outliers. 
+- examining the residuals (is the model good or not?), fitting a normal distribution to our residuals, if its a perfect normal distribution, all points will fall on the dotted line
 
 3. **Scale-Location.** Similar to the residuals vs. fitted graph, this will graph the squared standardized residuals by the fitted values. 
+- looking for trends in our results, want the red line to be as smooth as possible 
 
 4. **Residuals vs. Leverage.** This graph will display potential outliers. The values that fall outside the dashed red lines (Cook's distance) are outliers for the model. Watch for drastic departures of the solid red line from horizontal - this is a sign of a poor model fit.
+- important! leverage refers to the extent to which the point has impact on the model
+- large residual, small leverage means its not affecting coefficients (need to remove it has large impact on the model?)
 
 ```{r, fig.height = 3, fig.width = 4}
 par(mfrow = c(2,2), mar=c(4,4,4,4))
@@ -153,6 +179,10 @@ print(irradiancebydepth2)
 
 ## Multiple Linear Regression
 It is possible, and often useful, to consider multiple continuous explanatory variables at a time in a linear regression. For example, total phosphorus concentration in Paul Lake (the unfertilized lake) could be dependent on depth and dissolved oxygen concentration: 
+- explain third variable based on relationship of 2 could be overfitted
+  - also need to look at relationships between indepedent variables 
+  
+- looks at AIC to choose best MLR; balance between adding more variables and how much it improves model fitting 
 
 ``` {r, fig.height = 3, fig.width = 4}
 TPregression <- lm(data = subset(PeterPaul.chem.nutrients, lakename == "Paul Lake"), 
@@ -175,7 +205,7 @@ par(mfrow = c(1,1))
 We can also make exploratory plots of several continuous data points to determine possible relationships, as well as covariance among explanatory variables. 
 
 ```{r, fig.height = 3, fig.width = 4}
-#install.packages("corrplot")
+install.packages("corrplot")
 library(corrplot)
 PeterPaulnutrients <- 
   PeterPaul.chem.nutrients %>%
@@ -192,6 +222,9 @@ However, it is possible to over-parameterize a linear model. Adding additional e
 
 Let's say we want to know which explanatory variables will allow us to best predict total phosphorus concentrations. Potential explanatory variables from the dataset could include depth, dissolved oxygen, temperature, PAR, total N concentration, and phosphate concentration.
 
+- Workflow
+  - generate lm
+  apply step() function to resulting model 
 ```{r}
 Paul.naomit <- PeterPaul.chem.nutrients %>%
   filter(lakename == "Paul Lake") %>%

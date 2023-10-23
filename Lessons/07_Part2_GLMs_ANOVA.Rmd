@@ -12,6 +12,12 @@ editor_options:
 1. Apply special cases of the GLM (ANOVA) to real datasets
 2. Interpret and report the results of ANOVA in publication-style formats
 
+- fitting linear models based on categorical variables, it's not continuous! 
+
+##Terminology
+- factor: independent variable used to group data; explains variability in another response variable 
+- assumptions: populations are normally distributed, variances are equal, observations are independent (small samples can impact this, but you could still run the model)
+
 ## Set up
 ```{r, message = FALSE}
 
@@ -37,6 +43,11 @@ theme_set(mytheme)
 A one-way ANOVA is used when you have one categorical explanatory variable with more than two categories. In R, we can run the model with the function `lm` or `aov`, the latter of which will allow us to run post-hoc tests to determine pairwise differences.
 
 For example: Does total litter biomass differ among sites at the Niwot Ridge LTER?
+- group data by factor, checked the normality assumptions, checked equal variance (not true)
+- still ran ANOVA ('AOV')
+  - lm on categorical variables automatically changes to AOV
+    - it just changes the summary results (more in depth analysis avaiable with lm funciton)
+    
 ```{r}
 # Wrangle the data
 Litter.Totals <- Litter %>%
@@ -120,6 +131,9 @@ What information does the output give us? How might we report this information i
 A two-way ANOVA allows us to examine the effects of two categorical explanatory variables on a continuous response variable. 
 
 For example: What if we wanted to know how litter masses varied across functional groups and land cover class?
+
+- more than one variable or interactive effects 
+  - this level from functional and class groups leads to something... maybe need to dive deeper into that? 
 ```{r}
 # Format as aov
 Litter.anova.2way <- aov(data = Litter, dryMass ~ functionalGroup + nlcdClass)
@@ -152,6 +166,8 @@ summary(Litter.anova.2way4)
 ```
 
 If the interaction is significant, we interpret pairwise differences for the interaction. If the interaction is not significant, we interpret differences for the main effects only.
+
+- post hoc tests: could you get a better model with different groupings 
 
 ```{r}
 # Run a post-hoc test for pairwise differences
