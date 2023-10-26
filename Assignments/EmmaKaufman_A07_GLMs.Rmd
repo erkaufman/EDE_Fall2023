@@ -178,7 +178,7 @@ summary(chem.anova2)
 
 13. Is there a significant difference in mean temperature among the lakes? Report your findings. 
 
-> Answer: There is a significant difference in mean temperature among the lakes compared to Central Long lake. The p-value is below 0.05 for each indivudal lake compared to Central Long lake, which means that we can attribute the difference in mean temperature to NOT be attributed to chance, and consider the difference to be significant. 
+> Answer: There is a significant difference in mean temperature among the lakes. The p-value is below 0.05 for each individual lake compared to at least one other lake, which means that we can say the difference in mean temperature is NOT attributed to chance, and we can consider the difference to be significant. In order to understand which lakes are distinct from eachother, we can compare the individual lakes' mean temp with the tukey test.
 
 
 
