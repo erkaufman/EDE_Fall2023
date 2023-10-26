@@ -231,4 +231,4 @@ twosample <- t.test(chem_subset_2lake$temperature_C ~ chem_subset_2lake$lakename
 twosample
 ```
 
->Answer: The mean July temperature for Crampton Lake is 15.35, and the mean July temperature for Ward Lake is 14.46. The p-vaule is 0.265, which is greater than 0.05. So, we cannot reject the null hypothesis. This means that the true difference in mean temperature between Crampton and Ward Lake is equal to 0. Thus, the mean tempreatures for the lakes are statistically equal. This does match my answer from part 16 that all lakes have mean temperatures that are statistically the same. 
+>Answer: The mean July temperature for Crampton Lake is 15.35, and the mean July temperature for Ward Lake is 14.46. The p-vaule is 0.265, which is greater than 0.05. So, we cannot reject the null hypothesis. This means that the true difference in mean temperature between Crampton and Ward Lake is equal to 0. Thus, the mean tempreatures for the lakes are statistically equal. This does match my answer from part 16 that Crampton and Ward lakes' mean temperatures are statistically the same (the Tukey test in part 16 also showed a p value greater than 0.05). 
