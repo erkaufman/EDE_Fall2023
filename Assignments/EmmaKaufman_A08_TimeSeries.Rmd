@@ -109,7 +109,8 @@ GaringerOzone_subset <-GaringerOzone %>%
   select(Date,DailyMax8,DAILY_AQI_VALUE)
   
 # 5
-Days <-as.data.frame(seq(as.Date("2010-01-01"), as.Date("2019-12-31"), by = "days")) #creating dataframe
+#creating dataframe
+Days <-as.data.frame(seq(as.Date("2010-01-01"), as.Date("2019-12-31"), by = "days")) 
 colnames(Days) <- "Date" #renaming the column
 
 # 6
@@ -123,7 +124,7 @@ GaringerOzone <- Days %>%
 
 7. Create a line plot depicting ozone concentrations over time. In this case, we will plot actual concentrations in ppm, not AQI values. Format your axes accordingly. Add a smoothed line showing any linear trend of your data. Does your plot suggest a trend in ozone concentration over time?
 
-```{r fig.height=6, fig.width=4}
+```{r fig.height=4, fig.width=6}
 #7
 PPM <- ggplot(GaringerOzone, aes(y = DailyMax8, x = Date)) +
   geom_line() +
@@ -224,7 +225,7 @@ summary(Ozone_trend2)
 
 13. Create a plot depicting mean monthly ozone concentrations over time, with both a geom_point and a geom_line layer. Edit your axis labels accordingly.
 
-```{r fig.height=4, fig.width=6}
+```{r fig.height=4, fig.width=8}
 # 13
 #Visualization
 Ozone_plot <-
@@ -234,7 +235,8 @@ ggplot(GaringerOzone.monthly, aes(x = Date, y = mean_ozone)) +
   ylab("Mean Ozone ppm") +
   geom_smooth( method = lm )+ #do we need this trend line?
   scale_x_date(date_breaks = "1 year", date_labels = '%Y')+
-  labs(title = "Monthly Mean Ozone Concentration from 2010-2020 at Garinger High School")
+  labs(title = "Monthly Mean Ozone Concentration from 2010-2020 at Garinger High School")+
+  theme(plot.title = element_text(size = 12))
 print(Ozone_plot)
 
 
@@ -251,13 +253,24 @@ print(Ozone_plot)
 ```{r}
 #15
 
-Garinger.late_Components <- as.data.frame(Monthly_Decomposed$time.series[,2:3]) #how to make this a timeseries? 
+Garinger.late_Components <- as.data.frame(Monthly_Decomposed$time.series[,1:3]) 
+#mutate with observed 
 
+Garinger.late_Components_no_seasonality <- mutate(Garinger.late_Components,
+        Mean_ozone = GaringerOzone.monthly$mean_ozone,     
+        Date = GaringerOzone.monthly$Date,
+        no_seasonal_mean = Mean_ozone- seasonal)
+
+no_seasonality.ts <- ts(Garinger.late_Components_no_seasonality$no_seasonal_mean, 
+                        start = c(2010,1), 
+                        frequency = 12)
+
+#need a sixth column that is the mean-seasonality 
 #16
 
-Ozone_nonseasonal <- Kendall::SeasonalMannKendall(Garinger.late_Components) #how to interpret? 
-NS2 <- trend::smk.test(Garinger.late_Components)
+Ozone_nonseasonal <- Kendall::MannKendall(no_seasonality.ts) #how to interpret? 
+summary(Ozone_nonseasonal)
 
 ```
 
-> Answer: 
+> Answer: The p-value from the non-seasonal Mann Kendall test is 0.007. This means the trend in the data is strongly statistically significant (our p-value is much less than 0.05) for the non-seasonal data. Our p-value was 0.04965 for the seasonal data, so removing the seasonality resulted in a more significant monotonic trend in the data. The tau value of -.165 means it is a decreasing monotonic trend (we also saw a decreasing monotonic trend with the SMK test). This means that mean ozone is decreasing over the 2010s. 
