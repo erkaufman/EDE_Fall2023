@@ -233,12 +233,11 @@ ggplot(GaringerOzone.monthly, aes(x = Date, y = mean_ozone)) +
   geom_point() +
   geom_line() +
   ylab("Mean Ozone ppm") +
-  geom_smooth( method = lm )+ #do we need this trend line?
+  geom_smooth( method = lm )+
   scale_x_date(date_breaks = "1 year", date_labels = '%Y')+
   labs(title = "Monthly Mean Ozone Concentration from 2010-2020 at Garinger High School")+
   theme(plot.title = element_text(size = 12))
 print(Ozone_plot)
-
 
 ```
 
@@ -253,22 +252,24 @@ print(Ozone_plot)
 ```{r}
 #15
 
+#decomposed time series into a dataframe
 Garinger.late_Components <- as.data.frame(Monthly_Decomposed$time.series[,1:3]) 
-#mutate with observed 
 
+#taking the dataframe and creating a column that removes seasonality
 Garinger.late_Components_no_seasonality <- mutate(Garinger.late_Components,
         Mean_ozone = GaringerOzone.monthly$mean_ozone,     
         Date = GaringerOzone.monthly$Date,
         no_seasonal_mean = Mean_ozone- seasonal)
 
+#converting the dataframe back into a timeseries
 no_seasonality.ts <- ts(Garinger.late_Components_no_seasonality$no_seasonal_mean, 
                         start = c(2010,1), 
                         frequency = 12)
 
-#need a sixth column that is the mean-seasonality 
 #16
 
-Ozone_nonseasonal <- Kendall::MannKendall(no_seasonality.ts) #how to interpret? 
+#running the MK test on the nonseasonal data
+Ozone_nonseasonal <- Kendall::MannKendall(no_seasonality.ts)
 summary(Ozone_nonseasonal)
 
 ```
