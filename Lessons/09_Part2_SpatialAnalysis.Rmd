@@ -47,7 +47,8 @@ library(sf)
 library(mapview); mapviewOptions(fgb = FALSE)
 library(RColorBrewer)
 library(here)
-
+library(leaflet)
+install.packages('leaflet.extras2')
 #Check that here points to the project folder
 here()
 ```
@@ -96,8 +97,7 @@ counties_sf<- st_read(here('Data/Spatial/cb_2018_us_county_20m.shp')) %>%
 colnames(counties_sf)
 
 #
-st_crs(counties_sf) 
-
+st_crs(counties_sf) #what is the coordinate reference system
 
 #
 nrow(counties_sf)
@@ -110,6 +110,8 @@ head(counties_sf)
 
 #Plot the data, colored by area of land in each county
 mapView(counties_sf, zcol = "AWATER")
+
+
 ```
 
 ### 2.2.2 Read in and explore 8-digit HUC watersheds for NC
@@ -118,21 +120,22 @@ mapView(counties_sf, zcol = "AWATER")
 
 ```{r read HUCs shapefile}
 #Read the shapefile into an sf dataframe named "huc8_sf"
-
+huc8_sf<- st_read(here('./Data/Spatial/NCHUC8.shp')) 
 
 #Reveal the columns
-
+colnames(huc8_sf)
 
 #Check the CRS
-
+st_crs(huc8_sf)
 
 #Examine some records
 head(huc8_sf)
 
 #View the data as a map, colored by the acreage in each
-
-
-
+mapView(huc8_sf, zcol = "ACRES")
+ggplot(data=huc8_sf) +
+  geom_sf(aes(fill= ACRES)) +
+  scale_fill_viridis_c()
 
 ```
 
@@ -142,12 +145,17 @@ head(huc8_sf)
 
 ```{r Select the Upper Neuse HUC 8}
 #Read the shapefile into an sf dataframe
-
+huc8_sf_UN<- huc8_sf %>% 
+  filter(SUBBASIN == "Upper Neuse")
 
 
 #Create a map
+ggplot() +
+  geom_sf(data=huc8_sf, fill= 'orange')+ #want everything to be one color, don't need aesthetics
+  geom_sf(data = huc8_sf_UN, fill = 'purple')
 
-
+mapView(huc8_sf, col.region = 'orange') | #use the | in leaflet to get a side by side!
+  mapView(huc8_sf_UN, col.region = 'turquoise')
 
 
 ```
@@ -169,7 +177,7 @@ If you have difficulty, the link you want is: - <https://services1.arcgis.com/Hp
 This a link to a spatial dataset in GeoJSON format. Now let's read this dataset in and explore it:
 
 ```{r load.geojson.data}
-powerplants_sf <- st_read('https://opendata.arcgis.com/datasets/ee0263bd105d41599be22d46107341c3_0.geojson')
+powerplants_sf <- st_read('https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Plants_gdb/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson')
 
 #Reveal the field names
 colnames(powerplants_sf)
@@ -249,6 +257,17 @@ ggplot() +
 
 *Now you try*: The URL '<https://raw.githubusercontent.com/ENV859/EnviroAtlasData/main/Wind_Energy.csv>' links to EPA's EnviroAtlas data on the amount of wind energy estimated at the HUC12 scale. You need to load this data, group by HUC8 (computing the sum wind energy of each HUC12 in a given HUC8) and join with the HUC 8 spatial features dataset. 
  * Be sure, as above, you read in the `HUC_12` column as a factor so it doesn't default to a numeric column.
+```{r}
+
+
+
+
+
+
+
+
+
+```
 
 ```{r}
 #Compute HUC8 wind energy
@@ -295,13 +314,16 @@ mapview(state_sf)
 ```{r Aggregate the HUC data on an attribute, saving as huc2_sf}
 #List the unique values in the DWQ_Basin field
 
-
+unique(huc8_sf$DWQ_Basin)
 
 #Summarize on DWQ Basin value
-
+huc2_sf <- huc8_sf %>% 
+  group_by(DWQ_Basin) %>% 
+  summarise(ACRES = sum(ACRES),
+            SQ_MILES = sum(SQ_MILES))
 
 #Map the data
-
+mapView(huc2_sf)
 
 ```
 
@@ -381,12 +403,13 @@ mapview(neuse_counties_sf, zcol='Area_m2')
 
 ```{r EXERCISE: Clipping}
 #Select the Triangle County from the 
-
-
+tri_sf <- counties_sf_utm %>% 
+  filter(NAME %in% c('Chatham', 'Durham', 'Orange', 'Wake'))
   
 #Grab the intersecting HUC_8s
+huc_intersect <- huc8_sf_utm[tri_sf,] #not sure if this is correct
 
-
+counties_intersect2 <- tri_sf %>% st_filter(huc8_sf_utm) #also not sure if this is correct 
 
 #Intersect the HUC_8s
 
