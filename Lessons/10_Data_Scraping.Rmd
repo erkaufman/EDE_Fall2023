@@ -88,7 +88,7 @@ The selector gadget tool is useful in identifying the internal ids of the elemen
 2. Click on the box listing the registrant ("American & Efird, Inc."). You'll see a number of boxes in yellow, but we just want the one box in yellow.
 3. Click various other boxes until only the one we want is highlighted in yellow (or green). It's ok if others are in red. This may take a bit of trial and error, and if you get too mess up, you can start over by clicking the `Clear` button in the Selector Gadget floating toolbar.
 
-When successful, the box should display `.table tr:nth-child(1) td:nth-child(2)`. This uniquely identifies the html element containing the data we want. 
+When successful, the box should display `.table tr:nth-child(1) td:nth-child(2)`. This uniquely identifies the html element containing the data we want.
 
 With this id known, we can extract it's value in a two-step process. First we use `html_nodes()` to grab the element using its tag. Then we extract the value associated with that element text using the `html_text()` function. 
 

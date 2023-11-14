@@ -1,6 +1,6 @@
 ---
 title: "Assignment 10: Data Scraping"
-author: "Student Name"
+author: "Emma Kaufman"
 output: pdf_document
 ---
 
@@ -25,7 +25,12 @@ This exercise accompanies the lessons in Environmental Data Analytics on data sc
 
 ```{r 1. Project Setup, message = FALSE}
 #1 
+library(tidyverse)
+library(lubridate)
+library(here); here()
+library(rvest)
 
+getwd()
 
 ```
 
@@ -38,6 +43,8 @@ Indicate this website as the as the URL to be scraped. (In other words, read the
 
 ```{r set.the.scraping.website}
 #2 
+webpage <- read_html('https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid=03-32-010&year=2022')
+webpage
 
 ```
 
@@ -58,6 +65,19 @@ In the code chunk below scrape these values, assigning them to four separate var
 ```{r scrape.the.data}
 #3 
 
+Water_System <- webpage %>% 
+  html_nodes("div+ table tr:nth-child(1) td:nth-child(2)") %>% 
+  html_text()
+PWSID <- webpage %>% 
+  html_nodes("td tr:nth-child(1) td:nth-child(5)") %>% 
+  html_text()
+Ownership <- webpage %>% 
+  html_nodes("div+ table tr:nth-child(2) td:nth-child(4)") %>% 
+  html_text()
+MGD <- webpage %>% 
+  html_nodes("th~ td+ td") %>% 
+  html_text()
+
 ```
 
 
@@ -71,9 +91,27 @@ In the code chunk below scrape these values, assigning them to four separate var
 
 ```{r create.a.dataframe.from.scraped.data}
 #4 
+Month<- webpage %>% 
+  html_nodes(".fancy-table:nth-child(31) tr+ tr th") %>% 
+  html_text()
 
+year= '2022'
+
+df <- data.frame(
+  'Water System Name' = Water_System,
+  'PWSID' = PWSID,
+  'Ownership' = Ownership,
+  'MGD' =  as.numeric(gsub(',','', MGD)),
+  'Month' = Month,
+  'Year' = year
+) %>% 
+  mutate(Date = my(paste(Month, Year)))
 #5 
-
+ggplot(df,aes(x=Date,y=MGD)) + 
+  geom_line() +
+  labs(x = "Date",
+       y = "Max Daily Withdrawal (MGD)",
+       title= "Maximum Daily Withdrawals across 2022")
 ```
 
 6. Note that the PWSID and the year appear in the web address for the page we scraped. Construct a function using your code above that can scrape data for any PWSID and year for which the NC DEQ has data. **Be sure to modify the code to reflect the year and site (pwsid) scraped**.
@@ -81,6 +119,43 @@ In the code chunk below scrape these values, assigning them to four separate var
 ```{r construct.a.scraping.function}
 #6. 
 
+#Create our scraping function
+scrape.it <- function(the_year, the_facility){
+  
+  #Retrieve the website contents 
+  the_base_url <- 'https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid='
+  the_scrape_url <- paste0(the_base_url, the_facility, '&year=', the_year)
+  
+ #Set the element address variables
+  Water_System_tag <-"div+ table tr:nth-child(1) td:nth-child(2)"
+  PWSID_tag <- "td tr:nth-child(1) td:nth-child(5)"
+  Ownership_tag <- "div+ table tr:nth-child(2) td:nth-child(4)"
+  MGD_tag <- "th~ td+ td"
+  Month_tag<- ".fancy-table:nth-child(31) tr+ tr th"
+  
+  #Scrape the data items
+  Water_System <-  the_base_url %>% html_nodes(Water_System_tag) %>% html_text()
+  PWSID <-  the_base_url %>% html_nodes(PWSID_tag) %>% html_text()
+  Ownership <-  the_base_url %>% html_nodes(Ownership_tag) %>% html_text()
+  MGD <-  the_base_url %>% html_nodes(MGD_tag) %>% html_text()
+  Month<- the_base_url %>% html_nodes(Month_tag) %>% html_text()
+  
+  #Convert to a dataframe
+ df_Water <- data.frame(
+  'Water System Name' = Water_System,
+  'PWSID' = PWSID,
+  'Ownership' = Ownership,
+  'MGD' =  as.numeric(gsub(',','', MGD)),
+  'Month' = Month,
+  'Year' = the_year
+) %>% 
+  mutate(Date = my(paste(Month, Year)))
+  #Pause for a moment - scraping etiquette
+  #Sys.sleep(1) #uncomment this if you are doing bulk scraping!
+  
+  #Return the dataframe
+  return(df_Water)
+}
 
 ```
 
@@ -88,7 +163,13 @@ In the code chunk below scrape these values, assigning them to four separate var
 
 ```{r fetch.and.plot.Durham.2015.data}
 #7 
+the_df <- scrape.it(2015, '03-32-010')
 
+ggplot(the_df,aes(x=Date,y=MGD)) + 
+  geom_line() +
+  labs(x = "Date",
+       y = "Max Daily Withdrawal (MGD)",
+       title= paste0("Maximum Daily Withdrawals across ", the_year))
 
 ```
 
