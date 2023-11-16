@@ -323,7 +323,6 @@ We use Purrr's `map2` function which allow us to provide two vectors of equal le
 This website gives a nice example of this: <https://dcl-prog.stanford.edu/purrr-parallel.html>
 
 ```{r Scrape.all.2020.data}
-
 #Subset the facilities
 the_facility_ids_subset <-  sample(the_facility_ids,20)
 

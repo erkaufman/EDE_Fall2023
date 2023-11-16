@@ -124,35 +124,39 @@ scrape.it <- function(the_year, the_facility){
   
   #Retrieve the website contents 
   the_base_url <- 'https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid='
-  the_scrape_url <- paste0(the_base_url, the_facility, '&year=', the_year)
+  the_scrape_url <- read_html(paste0(
+    'https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid=', 
+    the_facility, 
+    '&year=', 
+    the_year))
   
  #Set the element address variables
   Water_System_tag <-"div+ table tr:nth-child(1) td:nth-child(2)"
   PWSID_tag <- "td tr:nth-child(1) td:nth-child(5)"
   Ownership_tag <- "div+ table tr:nth-child(2) td:nth-child(4)"
   MGD_tag <- "th~ td+ td"
-  Month_tag<- ".fancy-table:nth-child(31) tr+ tr th"
+  #Month_tag<- ".fancy-table:nth-child(31) tr+ tr th"
   
   #Scrape the data items
-  Water_System <-  the_base_url %>% html_nodes(Water_System_tag) %>% html_text()
-  PWSID <-  the_base_url %>% html_nodes(PWSID_tag) %>% html_text()
-  Ownership <-  the_base_url %>% html_nodes(Ownership_tag) %>% html_text()
-  MGD <-  the_base_url %>% html_nodes(MGD_tag) %>% html_text()
-  Month<- the_base_url %>% html_nodes(Month_tag) %>% html_text()
+  Water_System <-  the_scrape_url %>% html_nodes(Water_System_tag) %>% html_text()
+  PWSID <-  the_scrape_url %>% html_nodes(PWSID_tag) %>% html_text()
+  Ownership <-  the_scrape_url %>% html_nodes(Ownership_tag) %>% html_text()
+  MGD <-  the_scrape_url %>% html_nodes(MGD_tag) %>% html_text()
+ # Month<- the_scrape_url %>% html_nodes(Month_tag) %>% html_text()
   
   #Convert to a dataframe
  df_Water <- data.frame(
-  'Water System Name' = Water_System,
-  'PWSID' = PWSID,
+  'Water System Name' = rep(Water_System),
+  'PWSID' = rep(PWSID),
   'Ownership' = Ownership,
   'MGD' =  as.numeric(gsub(',','', MGD)),
-  'Month' = Month,
-  'Year' = the_year
+  'Month' = c('Jan', 'May', 'Sep', 'Feb', 'Jun', 'Oct', 'Mar', 'Jul', 'Nov', 'Apr', 'Aug', 'Dec'),
+  'Year' = rep(the_year)
 ) %>% 
   mutate(Date = my(paste(Month, Year)))
   #Pause for a moment - scraping etiquette
   #Sys.sleep(1) #uncomment this if you are doing bulk scraping!
-  
+
   #Return the dataframe
   return(df_Water)
 }
@@ -169,29 +173,48 @@ ggplot(the_df,aes(x=Date,y=MGD)) +
   geom_line() +
   labs(x = "Date",
        y = "Max Daily Withdrawal (MGD)",
-       title= paste0("Maximum Daily Withdrawals across ", the_year))
-
+       title= paste0("Maximum Daily Withdrawals across 2015"))
 ```
 
 8. Use the function above to extract data for Asheville (PWSID = 01-11-010) in 2015. Combine this data with the Durham data collected above and create a plot that compares Asheville's to Durham's water withdrawals.
 
 ```{r fetch.and.plot.Asheville.2015.data}
 #8 
+Asheville_df <- scrape.it(2015, '01-11-010')
 
+combined_df <- rbind(the_df, Asheville_df)
 
+ggplot(combined_df, aes(x = Date, y = MGD, color = Water.System.Name)) +
+  geom_line() +
+  scale_x_date(date_breaks = "1 month", date_labels = '%m/%y')+
+  labs(
+       y = "Max Daily Withdrawal (MGD)",
+       title = "Maximum Daily Withdrawals across 2015 for Durham and Asheville",
+       color= "City")
 ```
 
 
-9. Use the code & function you created above to plot Asheville's max daily withdrawal by months for the years 2010 thru 2021.Add a smoothed line to the plot (method = 'loess').
+9. Use the code & function you created above to plot Asheville's max daily withdrawal by months for the years 2010 thru 2021. Add a smoothed line to the plot (method = 'loess').
 
 > TIP: See Section 3.2 in the "10_Data_Scraping.Rmd" where we apply "map2()" to iteratively run a function over two inputs. Pipe the output of the map2() function to `bindrows()` to combine the dataframes into a single one. 
 
 ```{r fetch.and.plot.Asheville.multiyear.data }
 #9 
+years <- seq(2010,2021)
 
+#
+Asheville_many <- map(years, scrape.it, the_facility= '01-11-010') %>% 
+  bind_rows()
 
+#Plot
+ggplot(Asheville_many,aes(x=Date,y=MGD)) + 
+  geom_line(color= 'darkblue') + 
+  geom_smooth(method="loess",se=FALSE) +
+  labs(title = "Water usage data in Asheville 2010-2021",
+       y="Withdrawal (mgd)")+
+   scale_x_date(date_breaks = "1 year", date_labels = '%Y')
 ```
 
 Question: Just by looking at the plot (i.e. not running statistics), does Asheville have a trend in water usage over time?
-> Answer:
+> Answer: From 2010-2016 it looks like water usage has a slight decrease, but water usage has substantially increased from 2016 until 2021. Overall I would say there is a general increase in water usage over time in Asheville. 
 >
