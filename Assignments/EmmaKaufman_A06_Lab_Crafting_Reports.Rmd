@@ -8,6 +8,8 @@ editor_options:
 toc: true
 ---
 
+\listoffigures
+
 ## Objectives:
 
 1.  More practice with R code chunk options

@@ -19,6 +19,7 @@ editor_options:
 library(tidyverse)
 library(agricolae)   
 library(here)
+library(ggplot2)
 here()
 
 EPAair <- read.csv(here("Data/Processed_KEY/EPAair_O3_PM25_NC1819_Processed.csv"), stringsAsFactors = TRUE)
@@ -64,7 +65,7 @@ Ozone.box <- ggplot(EPAair, aes(x= as.factor(Year),
                     y = Ozone))+
   geom_boxplot()+
   stat_summary(geom = "text",
-               fun = mean,
+               fun = max,
                vjust = -1,
                size= 4,
                label = c("b","a"))+

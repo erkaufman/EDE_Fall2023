@@ -1,0 +1,120 @@
+---
+title: "Assignment 2: Coding Basics"
+author: "KEY 2024"
+output: pdf_document
+geometry: margin=2.54cm
+editor_options: 
+  chunk_output_type: console
+---
+
+## OVERVIEW
+
+This exercise accompanies the lessons/labs in Environmental Data Analytics on coding basics.
+
+## Directions
+
+1.  Rename this file `<FirstLast>_A02_CodingBasics.Rmd` (replacing `<FirstLast>` with your first and last name).
+2.  Change "Student Name" on line 3 (above) with your name.
+3.  Work through the steps, **creating code and output** that fulfill each instruction.
+4.  Be sure to **answer the questions** in this assignment document.
+5.  When you have completed the assignment, **Knit** the text and code into a single PDF file.
+6.  After Knitting, submit the completed exercise (PDF file) to Canvas.
+
+## Basics, Part 1
+
+1.  Generate a sequence of numbers from one to 55, increasing by fives. Assign this sequence a name.
+
+2.  Compute the mean and median of this sequence.
+
+3.  Ask R to determine whether the mean is greater than the median.
+
+4.  Insert comments in your code to describe what you are doing.
+
+```{r basics 1}
+#1. Generate sequence
+the_seq <- seq(1,55,5)
+the_seq
+#2. Compute mean & median
+the_mean <- mean(the_seq)
+the_mean
+the_median <- median(the_seq)
+the_median
+
+#3. Check whether mean > median
+the_mean > the_median
+
+```
+
+## Basics, Part 2
+
+5.  Create three vectors, each with four components, consisting of (a) student names, (b) test scores, and (c) whether they are on scholarship or not (TRUE or FALSE).
+
+6.  Label each vector with a comment on what type of vector it is.
+
+7.  Combine each of the vectors into a data frame. Assign the data frame an informative name.
+
+8.  Label the columns of your data frame with informative titles.
+
+```{r basics 2}
+#5,6. Create vectors & Label
+the_names <- c("Alpha","Beta","Gamma","Delta") #Character vector
+the_scores <- c(60,64,82,44)                   #Numeric vector
+the_scholarship <- c(TRUE,TRUE,FALSE,FALSE)    #Logical vector
+
+#7 Combine vectors into a dataframe
+the_df <- data.frame(the_names, the_scores, the_scholarship)
+
+#8 Name columns
+colnames(the_df) <-  c('Name','Score','Scholarship')
+
+```
+
+9.  QUESTION: How is this data frame different from a matrix?
+
+> Answer:
+While both are 2 dimensions (rows and columns), the values in the dataframe are of different types. A matrix must contain values of the same data type. 
+
+10. Create a function with one input. In this function, use `if`...`else` to evaluate the value of the input: if it is greater than 50, print the word "Pass"; otherwise print the word "Fail". 
+
+11. Create a second function that does the exact same thing as the previous one but uses `ifelse()` instead if `if`...`else `. 
+
+12. Run both functions using the value 52.5 as the input
+
+13. Run both functions using the **vector** of student test scores you created as the input. (Only one will work properly...)
+
+```{r basics 3}
+#10. Create a function using if...else
+my_function1 <- function(the_input){
+  if (the_input > 50) {
+    result <- "Pass"
+  } else {
+    result <- "Fail"
+  }
+  print(result)
+}
+
+#11. Create a function using ifelse()
+my_function2 <- function(the_input){
+  result <- ifelse (the_input > 50,"Pass","Fail")
+  print(result)
+}
+
+#12a. Run the first function with the value 52.5
+my_function1(50)
+
+#12b. Run the second function with the value 52.5
+my_function2(52.5)
+
+#13a. Run the first function with the vector of test scores
+#my_function1(the_scores)
+
+#13b. Run the second function with the vector of test scores
+my_function2(the_scores)
+```
+
+14. QUESTION: Which option of `if`...`else` vs. `ifelse` worked? Why? (Hint: search the web for "R vectorization")
+
+> Answer:
+
+
+**NOTE** Before knitting, you'll need to comment out the call to the function in Q13 that does not work. (A document can't knit if the code it contains causes an error!)

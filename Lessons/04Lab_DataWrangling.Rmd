@@ -115,6 +115,9 @@ NTL.phys.data.newprocess <-
   filter(year4 %in% c(1990:1999))  %>%
   filter(daynum %in% c(181:213))
 
+filter(month(sampledate) == 7)
+
+
 
 
 #Exercise 4: Using the data from part 3, a pipe, and the summarize() function 
